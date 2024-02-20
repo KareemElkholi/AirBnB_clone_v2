@@ -2,6 +2,7 @@
 """FileStorage class module Test"""
 from unittest import TestCase
 from models.base_model import BaseModel
+from models.user import User
 from models.engine.file_storage import FileStorage
 from unittest.mock import patch, mock_open
 
@@ -24,8 +25,7 @@ class TestFileStorage(TestCase):
         self.assertIsInstance(self.storage.all(), dict)
         FileStorage._FileStorage__objects.clear()
         self.assertFalse(self.storage.all())
-        with self.assertRaises(TypeError):
-            self.storage.all(8)
+        self.assertEqual(self.storage.all(User), {})
 
     def test_new(self):
         """new method test"""
@@ -51,3 +51,10 @@ class TestFileStorage(TestCase):
             file.assert_called_with("file.json", "r")
         with self.assertRaises(TypeError):
             self.storage.reload(8)
+
+    def test_delete(self):
+        """delete method test"""
+        self.assertIn(f"BaseModel.{self.model_1.id}", self.storage.all())
+        self.storage.delete(self.model_1)
+        self.storage.save()
+        self.assertNotIn(f"BaseModel.{self.model_1.id}", self.storage.all())
