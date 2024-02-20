@@ -41,8 +41,16 @@ class HBNBCommand(Cmd):
         elif args[0] not in self.cls:
             print("** class doesn't exist **")
         else:
-            print(eval(args[0])().id)
+            new = eval(args[0])()
             self.storage.save()
+            print(new.id)
+            if len(args) > 1:
+                cls = args.pop(0)
+                for arg in args:
+                    attr = arg.split("=")[0]
+                    val = arg.split("=")[1].replace("_", " ")
+                    Cmd.onecmd(self, f"update {cls} {new.id} {attr} '{val}'")
+
 
     def do_all(self, arg):
         """Print the string representation of all instances using:
