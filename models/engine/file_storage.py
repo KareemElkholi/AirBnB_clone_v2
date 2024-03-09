@@ -19,7 +19,7 @@ class FileStorage:
         """returns the dictionary __objects"""
         if cls:
             return {k: v for k, v in self.__objects.items()
-                    if getattr(v, "__class__") == cls}
+                    if v.__class__.__name__ == cls}
         else:
             return self.__objects
 

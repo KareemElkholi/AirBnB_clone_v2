@@ -14,7 +14,7 @@ class TestCity(TestCase):
                   'id': '56d43177-cc5f-4d6c-a0c1-e167f8c27337',
                   'created_at': '2017-09-28T21:03:54.052298',
                   'updated_at': '2017-09-28T21:03:54.052298'}
-        self.city_1 = City()
+        self.city_1 = City(state_id="1", name="San_Francisco")
         self.city_2 = City(**kwargs)
 
     def test_init(self):

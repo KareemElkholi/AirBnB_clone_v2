@@ -133,6 +133,15 @@ class TestHBNBCommand(TestCase):
                 id = f.getvalue().strip()
                 self.assertIn(f"{i}.{id}", self.all.keys())
 
+        """test with correct class names and attributes"""
+        for i in self.cls:
+            with patch('sys.stdout', new=StringIO()) as f:
+                HBNBCommand().onecmd(f"create {i} str=new_string num=8")
+                id = f.getvalue().strip()
+                self.assertIn(f"{i}.{id}", self.all.keys())
+                self.assertEqual(self.all[f"{i}.{id}"].str, "new string")
+                self.assertEqual(self.all[f"{i}.{id}"].num, "8")
+
     def test_all(self):
         """test all function"""
         with patch('sys.stdout', new=StringIO()) as f:

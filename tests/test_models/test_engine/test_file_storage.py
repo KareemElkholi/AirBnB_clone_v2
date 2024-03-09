@@ -18,6 +18,7 @@ class TestFileStorage(TestCase):
         self.model_1 = BaseModel()
         self.model_2 = BaseModel(**kwargs)
         self.storage = FileStorage()
+        self.model_1.save()
 
     def test_all(self):
         """all method test"""

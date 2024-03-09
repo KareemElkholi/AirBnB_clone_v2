@@ -14,7 +14,7 @@ class TestState(TestCase):
                   'id': '56d43177-cc5f-4d6c-a0c1-e167f8c27337',
                   'created_at': '2017-09-28T21:03:54.052298',
                   'updated_at': '2017-09-28T21:03:54.052298'}
-        self.s_1 = State()
+        self.s_1 = State(name="California")
         self.s_2 = State(**kwargs)
 
     def test_init(self):

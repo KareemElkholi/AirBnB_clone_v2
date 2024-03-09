@@ -10,14 +10,13 @@ from models.city import City
 from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
-from models.engine.file_storage import FileStorage
+from models import storage
 
 
 class HBNBCommand(Cmd):
     """HBNBCommand class"""
     prompt = "(hbnb) "
     cls = ["BaseModel", "User", "State", "City", "Amenity", "Place", "Review"]
-    storage = FileStorage()
 
     def do_EOF(self, arg):
         """Quit command to exit the program"""
@@ -41,28 +40,27 @@ class HBNBCommand(Cmd):
         elif args[0] not in self.cls:
             print("** class doesn't exist **")
         else:
-            new = eval(args[0])()
-            self.storage.save()
-            print(new.id)
-            if len(args) > 1:
-                cls = args.pop(0)
+            kwargs = {}
+            cls = args.pop(0)
+            if len(args) > 0:
                 for arg in args:
                     attr = arg.split("=")[0]
                     val = arg.split("=")[1].replace("_", " ")
-                    Cmd.onecmd(self, f"update {cls} {new.id} {attr} '{val}'")
-
+                    kwargs[attr] = val
+            new = eval(cls)(**kwargs)
+            new.save()
+            print(new.id)
 
     def do_all(self, arg):
         """Print the string representation of all instances using:
         all or all <class name>"""
         args = split(arg)
         if len(args) == 0:
-            print([i.__str__() for i in self.storage.all().values()])
+            print([i.__str__() for i in storage.all().values()])
         elif args[0] not in self.cls:
             print("** class doesn't exist **")
         else:
-            print([i.__str__() for i in self.storage.all().values()
-                   if type(i).__name__ == args[0]])
+            print([i.__str__() for i in storage.all(args[0]).values()])
 
     def check(self, args):
         """shared if-else statement to validate the arguments"""
@@ -72,7 +70,7 @@ class HBNBCommand(Cmd):
             print("** class doesn't exist **")
         elif len(args) == 1:
             print("** instance id missing **")
-        elif f"{args[0]}.{args[1]}" not in self.storage.all():
+        elif f"{args[0]}.{args[1]}" not in storage.all():
             print("** no instance found **")
         else:
             return True
@@ -82,15 +80,15 @@ class HBNBCommand(Cmd):
         show <class name> <id>"""
         args = split(arg)
         if self.check(args):
-            print(self.storage.all().get(f"{args[0]}.{args[1]}"))
+            print(storage.all().get(f"{args[0]}.{args[1]}"))
 
     def do_destroy(self, arg):
         """Delete an instance using:
         destroy <class name> <id>"""
         args = split(arg)
         if self.check(args):
-            del self.storage.all()[f"{args[0]}.{args[1]}"]
-            self.storage.save()
+            del storage.all()[f"{args[0]}.{args[1]}"]
+            storage.save()
 
     def do_update(self, arg):
         """Update an instance using:
@@ -101,14 +99,14 @@ class HBNBCommand(Cmd):
         elif len(args) == 3:
             print("** value missing **")
         elif len(args) > 3:
-            obj = self.storage.all().get(f"{args[0]}.{args[1]}")
+            obj = storage.all().get(f"{args[0]}.{args[1]}")
             if hasattr(obj, args[2]):
                 args[3] = type(getattr(obj, args[2]))(args[3])
             try:
                 setattr(obj, args[2], args[3])
             except Exception:
                 pass
-            self.storage.save()
+            storage.save()
 
     def do_count(self, arg):
         """Count instances using:
@@ -120,7 +118,7 @@ class HBNBCommand(Cmd):
             print("** class doesn't exist **")
         else:
             count = 0
-            for i in self.storage.all().values():
+            for i in storage.all().values():
                 if type(i).__name__ == args[0]:
                     count += 1
             print(count)
