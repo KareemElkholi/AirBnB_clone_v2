@@ -14,7 +14,9 @@ class TestPlace(TestCase):
                   'id': '56d43177-cc5f-4d6c-a0c1-e167f8c27337',
                   'created_at': '2017-09-28T21:03:54.052298',
                   'updated_at': '2017-09-28T21:03:54.052298'}
-        self.p_1 = Place()
+        self.p_1 = Place(city_id="1", user_id="1", name="k", description="k",
+                         number_rooms=1, number_bathrooms=1, max_guest=1,
+                         price_by_night=1, latitude=1.0, longitude=1.0)
         self.p_2 = Place(**kwargs)
 
     def test_init(self):
