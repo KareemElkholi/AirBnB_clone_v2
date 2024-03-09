@@ -14,7 +14,7 @@ class TestAmenity(TestCase):
                   'id': '56d43177-cc5f-4d6c-a0c1-e167f8c27337',
                   'created_at': '2017-09-28T21:03:54.052298',
                   'updated_at': '2017-09-28T21:03:54.052298'}
-        self.a_1 = Amenity()
+        self.a_1 = Amenity(name="1")
         self.a_2 = Amenity(**kwargs)
 
     def test_init(self):
